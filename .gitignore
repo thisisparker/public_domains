@@ -1,0 +1,4 @@
+.eggs
+Pipfile
+*.log
+public_domains.egg-info/

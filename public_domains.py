@@ -1,54 +1,101 @@
-import string
-import sys
-
-import requests
+import nltk
+import time
+import tqdm
 import whois
+import string
+import logging
+import argparse
+import requests
 
-from nltk import tokenize
+# this should be a no-op if it has already been run
+nltk.download('punkt', quiet=True)
 
-BOOKFILE = sys.argv[1]
-OUTPUTFILE = BOOKFILE + '.possible-domains.txt'
-
-tlds = []
 known_unavailable = ['smile', 'windows','active','amazon','apple','audible',
                      'bank','baseball','basketball','boots','case','drive',
                      'fast','fire','fly','museum','origins','post','prime',
                      'silk','weather']
 
-r = requests.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt")
-for d in r.text.splitlines():
-    if d.startswith("#") or d.startswith('XN--'):
-        continue
-    d = d.lower()
-    if d not in known_unavailable:
-        tlds.append(d)
+nic = whois.NICClient()
 
-with open(BOOKFILE, 'r') as f:
-    md = ' '.join([l.strip() for l in f.readlines()])
+def main():
+    args = get_args()
+    hosts = get_hosts(args.text_file, args.quiet)
+    if args.check:
+        hosts = available_hosts(hosts, args.quiet, args.sleep)
+    for host in hosts:
+        print(host)
 
-md_sents = tokenize.sent_tokenize(md)
+def get_args():
+    parser = argparse.ArgumentParser(
+        prog="public_domains", 
+        description="Get possible hostnames from a text"
+    )
+    parser.add_argument("text_file", help="a text file to look for hostnames in")
+    parser.add_argument("--check", action="store_true", help="Check if the domain is actually available")
+    parser.add_argument("--quiet", action="store_true", help="Silence diagnostic messages on the console.")
+    parser.add_argument("--sleep", type=float, default=0.5, help="Time to sleep between whois requests")
+    parser.add_argument("--log", default="public_domains.log", help="Log file to write to.")
+    return parser.parse_args()
 
-possible_domains = {}
+def get_hosts(input_text, quiet=False):
+    if not quiet:
+        print("parsing input...")
+    tlds = get_tlds()
+    with open(input_text, 'r') as f:
+        md = ' '.join([l.strip() for l in f.readlines()])
 
-for s in md_sents:
-     wl = tokenize.word_tokenize(s)
-     wl = [w.lower() for w in wl]
-     wl = [''.join([c for c in w if c in string.ascii_lowercase]) for w in wl]
-     wl = [w for w in wl if w]
-     for i, w in enumerate(wl):
-         if (i > 1 and w in tlds and len(w) > 3 
-                 and len(wl[i-1]) > 5 and len(wl[i-2]) > 5):
-             full_domain = '.'.join([wl[i-2], wl[i-1], w])
-             
-             try:
-                 d = whois.query(full_domain.split('.',1)[1])
-                 possible_domains[full_domain] = 'reg' if d else 'unreg'
-             except (whois.exceptions.UnknownTld,
-                     whois.exceptions.FailedParsingWhoisOutput):
-                 possible_domains[full_domain] = 'unknown'
-             
-emoji_prefix = {'reg':'❌', 'unreg':'✔️', 'unknown':'❔'}
+    md_sents = nltk.tokenize.sent_tokenize(md)
 
-with open(OUTPUTFILE, 'w') as f:
-    for d in possible_domains:
-        f.write(f'{emoji_prefix[possible_domains[d]]} {d}\n')
+    possible_domains = set()
+
+    for s in md_sents:
+         wl = nltk.tokenize.word_tokenize(s)
+         wl = [w.lower() for w in wl]
+         wl = [''.join([c for c in w if c in string.ascii_lowercase]) for w in wl]
+         wl = [w for w in wl if w]
+         for i, w in enumerate(wl):
+             if (i > 1 and w in tlds and len(w) > 3 
+                     and len(wl[i-1]) > 5 and len(wl[i-2]) > 5):
+                 full_domain = '.'.join([wl[i-2], wl[i-1], w])
+                 possible_domains.add(full_domain)
+
+    return possible_domains
+
+def get_tlds():
+    tlds = []
+    r = requests.get("https://data.iana.org/TLD/tlds-alpha-by-domain.txt")
+
+    for d in r.text.splitlines():
+        if d.startswith("#") or d.startswith('XN--'):
+            continue
+        d = d.lower()
+        if d not in known_unavailable:
+            tlds.append(d)
+    return tlds
+
+def available_hosts(hosts, quiet, sleep):
+    av = []
+    with tqdm.tqdm(disable=quiet, total=len(hosts)) as progress:
+        for host in hosts:
+            progress.update()
+            progress.set_postfix_str("found %s" % len(av))
+            if available(host) in [None, True]:
+                av.append(host)
+            time.sleep(sleep)
+    return av
+
+def available(hostname): 
+    domain = hostname.split('.', 1)[1]
+    logging.info("whois look up for %s" % domain)
+    try:
+        response = nic.whois_lookup(None, domain, flags=0, quiet=True)
+        entry = whois.WhoisEntry.load(domain, response)
+        logging.info("got: %s" % entry)
+        return entry['domain_name'] is None
+    except whois.parser.PywhoisError as e:
+        logging.warn("whois parse error: %s", e)
+        return None
+
+if __name__ == "__main__":
+    main()
+

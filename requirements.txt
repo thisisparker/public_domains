@@ -1,0 +1,4 @@
+nltk
+tqdm
+requests
+python-whois
