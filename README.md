@@ -20,8 +20,8 @@ wget https://www.gutenberg.org/files/2701/2701-0.txt
 
 Run:
 
-```
-public_domains 2701-0.txt
+```bash
+$ public_domains 2701-0.txt
 
 tattooing.burned.like
 fishermen.technically.call
