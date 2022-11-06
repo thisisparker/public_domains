@@ -1,6 +1,6 @@
 # public_domains
 
-*public_domains* searches through a text file (preferably a novel like Moby Dick) and looks for possible host names to use. For more about why it was created see:
+*public_domains* searches through a text file (preferably a novel like Moby Dick) and looks for possible host names to use. For more about why [Parker Higgins](https://parkerhiggins.net/) created it was created see:
 
 https://parkerhiggins.net/2022/11/public-sub-domains
 
