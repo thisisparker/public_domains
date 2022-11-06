@@ -86,5 +86,5 @@ enough.little.place
 
 If you'd like *public_domains* to check if the domain is available use the the `--check` option:
 
-<img width="800" src="https://raw.githubusercontent.com/edsu/public_domains/main/screenshot2.gif">
+<img width="800" src="https://raw.githubusercontent.com/edsu/public_domains/main/screenshot.gif">
 
