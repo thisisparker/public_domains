@@ -19,6 +19,7 @@ nic = whois.NICClient()
 
 def main():
     args = get_args()
+    logging.basicConfig(filename=args.log, level=logging.INFO)
     hosts = get_hosts(args.text_file, args.quiet)
     if args.check:
         hosts = available_hosts(hosts, args.quiet, args.sleep)
