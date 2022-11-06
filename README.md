@@ -47,17 +47,12 @@ $ public_domains "Treasure Island"
 famous.buccaneer.here
 maroon.wriggling.like
 keeping.better.watch
-literary.archive.foundation
-expenses.including.legal
-including.outdated.equipment
 little.mountain.stream
-treasure.island.author
 admiral.benbow.black
 breathing.loudly.like
 breath.hanging.like
 shirts.thrown.open
 promontory.without.fail
-license.please.read
 feverish.unhealthy.spot
 something.almost.like
 following.important.news
@@ -65,7 +60,6 @@ lookout.shouted.land
 spirits.eating.like
 resumed.silver.here
 stranded.beyond.help
-widespread.public.support
 trebly.worthless.life
 including.checks.online
 canvas.cracking.like
@@ -77,7 +71,6 @@ foliage.compact.like
 strange.collection.like
 seamen.aboard.here
 creature.flitted.like
-foundation.information.page
 nighhand.fainting.doctor
 crying.johnny.black
 enough.little.place
