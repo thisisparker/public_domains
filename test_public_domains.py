@@ -12,9 +12,12 @@ def test_available():
     assert public_domains.available("this.parkerhiggins.net") == False
     assert public_domains.available("choo.choo.choo") == True
 
-def get_tlds():
+def test_get_tlds():
     tlds = public_domains.get_tlds()
     assert len(tlds) > 0
     assert "org" in tlds
 
-
+def test_gutenberg():
+    text = public_domains.gutenberg('origin of the species')
+    assert len(text) > 0
+    assert "I shall discuss the complex and little known laws" in text

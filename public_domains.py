@@ -1,3 +1,5 @@
+import os
+import re
 import nltk
 import time
 import tqdm
@@ -31,7 +33,7 @@ def get_args():
         prog="public_domains", 
         description="Get possible hostnames from a text"
     )
-    parser.add_argument("text_file", help="a text file to look for hostnames in")
+    parser.add_argument("text_file", help="A text file to look for hostnames in or a title to look up in gutenberg.org")
     parser.add_argument("--check", action="store_true", help="Check if the domain is actually available")
     parser.add_argument("--quiet", action="store_true", help="Silence diagnostic messages on the console.")
     parser.add_argument("--sleep", type=float, default=0.5, help="Time to sleep between whois requests")
@@ -39,11 +41,14 @@ def get_args():
     return parser.parse_args()
 
 def get_hosts(input_text, quiet=False):
-    if not quiet:
-        print("parsing input...")
     tlds = get_tlds()
-    with open(input_text, 'r') as f:
-        md = ' '.join([l.strip() for l in f.readlines()])
+
+    # if it's a file use it as input or look up the text in gutenberg
+    if os.path.isfile(input_text):
+        with open(input_text, 'r') as f:
+            md = ' '.join([l.strip() for l in f.readlines()])
+    else:
+        md = gutenberg(input_text)
 
     md_sents = nltk.tokenize.sent_tokenize(md)
 
@@ -96,6 +101,24 @@ def available(hostname):
     except whois.parser.PywhoisError as e:
         logging.warn("whois parse error: %s", e)
         return None
+
+def gutenberg(title):
+    params = {"query": title, "format": "json"}
+    results = requests.get('https://www.gutenberg.org/ebooks/search/', params).json()
+
+    if len(results) != 4 or len(results[3]) <= 1:
+        logging.warn("No Gutenberg results for %s" % title)
+        return None
+
+    match = re.match(r'^/ebooks/(\d+)\.json$', results[3][1])
+    if not match:
+        logging.warn("Unexpected JSON from Gutenberg")
+
+    guten_id = match.group(1)
+    url = "https://www.gutenberg.org/cache/epub/%s/pg%s.txt" % (guten_id, guten_id)
+
+    logging.info("fetching text from %s" % url)
+    return requests.get(url).text
 
 if __name__ == "__main__":
     main()
