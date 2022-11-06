@@ -10,7 +10,7 @@ with open("requirements.txt") as f:
 if __name__ == "__main__":
     setuptools.setup(
         name="public_domains",
-        version="0.0.3",
+        version="0.0.4",
         url="https://github.com/edsu/public_domains",
         author="Ed Summers",
         author_email="ehs@pobox.com",
