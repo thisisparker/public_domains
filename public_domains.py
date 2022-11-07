@@ -14,8 +14,12 @@ nltk.download('punkt', quiet=True)
 
 known_unavailable = ['smile', 'windows','active','amazon','apple','audible',
                      'bank','baseball','basketball','boots','case','drive',
-                     'fast','fire','fly','museum','natura','origins','post',
-                     'prime','silk','va','weather']
+                     'fast','fire','fly','museum','origins','post',
+                     'prime','silk','weather'] +
+                    ['arte', 'audi', 'dell', 'gallo', 'globo', 'infiniti',
+                     'natura', 'star', 'visa', 'viva', 'vivo', 'va', 'vana'] +
+                    # Might be upcoming
+                    ['data', 'latino', 'mobile']
 
 nic = whois.NICClient()
 
