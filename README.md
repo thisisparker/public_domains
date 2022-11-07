@@ -1,6 +1,8 @@
 # public_domains
 
-*public_domains* searches through a text file (preferably a novel like Moby Dick) and looks for possible host names to use. For more about why [Parker Higgins](https://parkerhiggins.net/) created it see:
+[![Build Status](https://github.com/thisisparker/public_domains/workflows/tests/badge.svg)](https://github.com/thisisparker/public_domains/actions/workflows/main.yml)
+
+*public_domains* searches through a text (such as a novel like [Moby Dick](https://www.gutenberg.org/files/2701/2701-0.txt)) and looks for possible host names to use. For more context about why such a thing was created see:
 
 https://parkerhiggins.net/2022/11/public-sub-domains
 
