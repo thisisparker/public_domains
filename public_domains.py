@@ -12,14 +12,49 @@ import requests
 # this should be a no-op if it has already been run
 nltk.download('punkt', quiet=True)
 
-known_unavailable = ['smile', 'windows','active','amazon','apple','audible',
-                     'bank','baseball','basketball','boots','case','drive',
-                     'fast','fire','fly','museum','origins','post',
-                     'prime','silk','weather'] +
-                    ['arte', 'audi', 'dell', 'gallo', 'globo', 'infiniti',
-                     'natura', 'star', 'visa', 'viva', 'vivo', 'va', 'vana'] +
-                    # Might be upcoming
-                    ['data', 'latino', 'mobile']
+known_unavailable = [
+
+    # these are known to not openly accept registrations
+    'active',
+    'amazon',
+    'apple',
+    'arte',
+    'audi',
+    'audible',
+    'bank',
+    'baseball',
+    'basketball',
+    'boots',
+    'case',
+    'dell',
+    'drive',
+    'fast',
+    'fire',
+    'fly',
+    'gallo',
+    'globo',
+    'infiniti',
+    'museum',
+    'natura',
+    'origins',
+    'post',
+    'prime',
+    'silk',
+    'smile',
+    'star',
+    'va',
+    'vana',
+    'visa',
+    'viva',
+    'vivo',
+    'weather',
+    'windows',
+
+    # these appear to be proposed but are not available yet
+    'data',
+    'latino',
+    'mobile'
+]
 
 nic = whois.NICClient()
 
