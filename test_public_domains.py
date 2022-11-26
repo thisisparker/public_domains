@@ -5,7 +5,7 @@ logging.basicConfig(filename="test.log", level=logging.DEBUG)
 
 def test_get_hosts():
     hosts = public_domains.get_hosts('test-data/moby-dick.txt', quiet=True)
-    assert len(hosts) == 187
+    assert len(hosts) == 145
     assert "almost.looked.next" in hosts
 
 def test_available():

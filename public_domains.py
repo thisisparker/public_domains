@@ -34,6 +34,7 @@ known_unavailable = [
     'gallo',
     'globo',
     'infiniti',
+    'like',
     'museum',
     'natura',
     'origins',
