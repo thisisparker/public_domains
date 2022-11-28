@@ -70,7 +70,7 @@ def main():
 
 def get_args():
     parser = argparse.ArgumentParser(
-        prog="public_domains", 
+        prog="public_domains",
         description="Get possible hostnames from a text"
     )
     parser.add_argument("text_file", help="A text file to look for hostnames in or a title to look up in gutenberg.org")
@@ -100,7 +100,7 @@ def get_hosts(input_text, quiet=False):
          wl = [''.join([c for c in w if c in string.ascii_lowercase]) for w in wl]
          wl = [w for w in wl if w]
          for i, w in enumerate(wl):
-             if (i > 1 and w in tlds and len(w) > 3 
+             if (i > 1 and w in tlds and len(w) > 3
                      and len(wl[i-1]) > 5 and len(wl[i-2]) > 5):
                  full_domain = '.'.join([wl[i-2], wl[i-1], w])
                  possible_domains.add(full_domain)
@@ -130,7 +130,7 @@ def available_hosts(hosts, quiet, sleep):
             time.sleep(sleep)
     return av
 
-def available(hostname): 
+def available(hostname):
     domain = hostname.split('.', 1)[1]
     logging.info("whois look up for %s" % domain)
     try:
@@ -139,7 +139,7 @@ def available(hostname):
         logging.info("got: %s" % entry)
         return entry['domain_name'] is None
     except whois.parser.PywhoisError as e:
-        logging.warn("whois parse error: %s", e)
+        logging.warning("whois parse error: %s", e)
         return None
 
 def gutenberg(title):
@@ -147,12 +147,12 @@ def gutenberg(title):
     results = requests.get('https://www.gutenberg.org/ebooks/search/', params).json()
 
     if len(results) != 4 or len(results[3]) <= 1:
-        logging.warn("No Gutenberg results for %s" % title)
+        logging.warning("No Gutenberg results for %s" % title)
         return None
 
     match = re.match(r'^/ebooks/(\d+)\.json$', results[3][1])
     if not match:
-        logging.warn("Unexpected JSON from Gutenberg")
+        logging.warning("Unexpected JSON from Gutenberg")
 
     guten_id = match.group(1)
     url = "https://www.gutenberg.org/cache/epub/%s/pg%s.txt" % (guten_id, guten_id)
