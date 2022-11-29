@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import nltk
 import time
 import tqdm
@@ -89,6 +90,8 @@ def get_hosts(input_text, quiet=False):
             md = ' '.join([l.strip() for l in f.readlines()])
     else:
         md = gutenberg(input_text)
+        if md is None:
+            sys.exit('No Gutenberg results for "%s"' % input_text)
 
     md_sents = nltk.tokenize.sent_tokenize(md)
 
